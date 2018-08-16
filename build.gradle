@@ -1,0 +1,67 @@
+buildscript {
+	ext {
+		springBootVersion = '2.0.3.RELEASE'
+		swaggerVersion = '2.9.2'
+		logstashVersion = '5.1'
+		mockitoVersion = '2.8.47'
+	}
+	repositories {
+		mavenCentral()
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+	}
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+
+group = 'com.ordercommand'
+sourceCompatibility = 1.8
+version = "${project.ext.properties.appVersion ?: '0.0.0'}"
+
+bootJar {
+	baseName = "${project.ext.properties.artifactName ?: "order-command-api"}"
+	version = version
+}
+
+repositories {
+	mavenLocal()
+	mavenCentral()
+}
+
+
+ext {
+	springCloudVersion = 'Finchley.RELEASE'
+}
+
+dependencies {
+	compile('org.springframework.boot:spring-boot-starter-web')
+	compile('org.springframework.boot:spring-boot-starter-actuator')
+	compile('org.springframework.cloud:spring-cloud-starter-netflix-eureka-client')
+	compile('org.springframework.cloud:spring-cloud-starter-netflix-hystrix')
+	compile('org.springframework.cloud:spring-cloud-starter-openfeign')
+	compile("org.springframework.cloud:spring-cloud-starter-feign")
+
+	compile("io.springfox:springfox-swagger2:${swaggerVersion}")
+	compile("io.springfox:springfox-swagger-ui:${swaggerVersion}")
+	compile("net.logstash.logback:logstash-logback-encoder:${logstashVersion}")
+
+	compileOnly('org.projectlombok:lombok')
+	testCompile("org.mockito:mockito-core:${mockitoVersion}")
+	testCompile('org.springframework.boot:spring-boot-starter-test')
+}
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+	}
+}
+
+springBoot {
+	buildInfo {
+
+	}
+}
