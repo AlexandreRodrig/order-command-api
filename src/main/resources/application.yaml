@@ -13,3 +13,8 @@ logging:
   level:
     org.springframework: WARN
     com.ordercommand: INFO
+
+#config ribon ihm-product-api
+ihm-product-api:
+  ribbon:
+    listOfServers: http://localhost:13085

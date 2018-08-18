@@ -2,6 +2,8 @@ package com.ordercommandapi.ordercommandapi.service;
 
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.netflix.hystrix.contrib.javanica.command.AsyncResult;
+import com.ordercommandapi.ordercommandapi.controller.dto.ProductDto;
+import com.ordercommandapi.ordercommandapi.controller.feign.ProductProxy;
 import com.ordercommandapi.ordercommandapi.service.model.Order;
 import lombok.extern.slf4j.Slf4j;
 import net.logstash.logback.argument.StructuredArguments;
@@ -14,9 +16,11 @@ import java.util.concurrent.Future;
 @Slf4j
 public class OrderService {
 
-    @Autowired
-    public OrderService(){
+    private ProductProxy productProxy;
 
+    @Autowired
+    public OrderService(ProductProxy productProxy) {
+        this.productProxy = productProxy;
     }
 
     @HystrixCommand(groupKey = "order", commandKey = "createOrder", fallbackMethod = "createOrderFallback")
@@ -24,7 +28,8 @@ public class OrderService {
         return new AsyncResult<Order>() {
             @Override
             public Order invoke() {
-                log.info("Sending order {} to command bus",StructuredArguments.value("description", order.getDescription()));
+                log.info("Sending order {} to command bus",
+                        StructuredArguments.value("description", order.getDescription()));
                 return new Order();
             }
         };
@@ -35,5 +40,7 @@ public class OrderService {
         return null;
     }
 
-
+    public ProductDto getProduct(int id) {
+        return productProxy.getProduct(id);
+    }
 }
