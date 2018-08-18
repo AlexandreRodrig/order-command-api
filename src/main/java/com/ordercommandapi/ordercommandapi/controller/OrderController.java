@@ -60,8 +60,7 @@ public class OrderController {
             @ApiResponse(code = 500, message = "Something went wrong!") }
     )
     public void getProduct(@ApiParam(value = "id", required = false) @PathVariable("id") String id) {
-        ProductDto productDto = new ProductDto();
-        productDto = orderService.getProduct(Integer.valueOf(id));
+        ProductDto productDto = orderService.getProduct(Integer.valueOf(id));
         log.info("Get product {}!", productDto);
     }
 
